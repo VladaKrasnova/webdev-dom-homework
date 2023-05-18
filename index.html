@@ -99,26 +99,6 @@ function renderComments() {
 
   renderComments();
 
-  // fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
-  //         method: "POST",
-  //         body: JSON.stringify({
-  //           name: replaceValue(nameElement.value),
-  //           comment: replaceValue(commentElement.value),
-  //         })
-  //       }).then((response) => {
-  //         response.json().then(() => {
-  //           fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
-  //             method: "GET"
-  //           }).then((responseAdd) => {
-  //             responseAdd.json().then((addJson) => {
-  //               comments = addJson.comments;
-  //               isWaiting = false;
-
-  //               renderComments();
-  //             });
-  //           });
-  //         });
-  //       });
 
   buttonElement.addEventListener('click', () => {
     nameElement.classList.remove('error');
@@ -132,13 +112,13 @@ function renderComments() {
       return;
     };
 
-    // comments.push({
-    //   author: {name: replaceValue(nameElement.value)},
-    //   date: getTime(),
-    //   text: replaceValue(commentElement.value),
-    //   likes: 0,
-    //   isLiked: false,
-    // })
+    comments.push({
+      author: {name: replaceValue(nameElement.value)},
+      date: getTime(),
+      text: replaceValue(commentElement.value),
+      likes: 0,
+      isLiked: false,
+    })
 
 
     fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
@@ -155,25 +135,6 @@ function renderComments() {
       });
     });
     
-    // fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
-    //       method: "POST",
-    //       body: JSON.stringify({
-    //         name: replaceValue(nameElement.value),
-    //         text: replaceValue(commentElement.value),
-    //       })
-    //     }).then((response) => {
-    //       response.json().then(() => {
-    //         fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
-    //           method: "GET"
-    //         }).then((responseData) => {
-    //           responseData.json().then((addJson) => {
-    //             comments = addJson.comments;
-    //             renderComments();
-    //           });
-    //         });
-    //       });
-    //     });
-
     renderComments();
     nameElement.value = '';
     commentElement.value = '';
@@ -228,49 +189,6 @@ function answersComment (){
       .replaceAll(">", "&gt;")
       .replaceAll('"', "&quot;");
   }
-
-  // buttonElement.addEventListener('click', () => {
-  //   nameElement.classList.remove('error');
-  //   commentElement.classList.remove('error');
-  //   if (nameElement.value === '') {
-  //     nameElement.classList.add('error');
-  //     return;
-  //   };
-  //   if (commentElement.value === '') {
-  //     commentElement.classList.add('error');
-  //     return;
-  //   };
-
-  //   // comments.push({
-  //   //   author: {name: replaceValue(nameElement.value)},
-  //   //   date: getTime(),
-  //   //   text: replaceValue(commentElement.value),
-  //   //   likes: 0,
-  //   //   isLiked: false,
-  //   // })
-
-
-  //   fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
-  //       method: "POST",
-  //       body: JSON.stringify({
-  //         author: {name: replaceValue(nameElement.value)},
-  //         text: replaceValue(commentElement.value),
-  //       })
-  //     }).then((response) => {
-  //     const jsonPromise = response.json();
-  //     jsonPromise.then((responseData) => {
-  //       comments = responseData.comments;
-  //       renderComments();
-  //     });
-  //   });
-    
-  //   renderComments()
-  //   nameElement.value = '';
-  //   commentElement.value = '';
-
-  // });
-
-
 
 
 </script>
