@@ -12,6 +12,7 @@
     <ul id="add-comments" class="comments">
       <!-- был код -->
     </ul>
+    <a href="mailto:"></a>
     <div class="add-form">
       <input id="name-input" type="text" class="add-form-name" placeholder="Введите ваше имя" />
       <textarea id="comment-input" type="textarea" class="add-form-text" placeholder="Введите ваш коментарий"
@@ -31,98 +32,61 @@
   const nameElement = document.getElementById('name-input');
   const commentElement = document.getElementById('comment-input');
 
-  
-  function getTime(){
+  function getTime() {
     let date = new Date();
-    const months = ["01", "02", "03", "04", "05", "06","07", "08", "09", "10", "11", "12"];
-    let fullDate = date.getDate() + "." + months[date.getMonth()] + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes(); 
-    return fullDate; 
+    const months = ["01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12"];
+    let fullDate = date.getDate() + "." + months[date.getMonth()] + "." + date.getFullYear() + " " + date.getHours() + ":" + date.getMinutes();
+    return fullDate;
   }
 
+  let comments = [];
+  // let comments = [
+  //   {
+  //     author: {name: "Глеб Фокин"},
+  //     date: '12.02.22 12:18',
+  //     text: 'Это будет первый комментарий на этой странице',
+  //     likes: 3,
+  //     isLiked: false,
+  //   },
+  //   {
+  //     author: {name: "Варвара Н."},
+  //     date: '13.02.22 19:22',
+  //     text: 'Мне нравится как оформлена эта страница! ❤',
+  //     likes: 75,
+  //     isLiked: true,
+  //   }
+  // ];
 
-  const comments = [
-    {
-      name: 'Глеб Фокин',
-      date: '12.02.22 12:18',
-      comment: 'Это будет первый комментарий на этой странице',
-      like: 3,
-      likes: false,
-    },
-    {
-      name: 'Варвара Н.',
-      date: '13.02.22 19:22',
-      comment: 'Мне нравится как оформлена эта страница! ❤',
-      like: 75,
-      likes: true,
-    }
-  ];
 
+  fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+      method: "GET"
+    }).then((responseStart) => {
+      responseStart.json().then((startJson) => {
+        comments = startJson.comments;
 
-  const likesElements = () => {
-  const likesButtonsElements = document.querySelectorAll('.like-button');
-
-  for (const likesButtonsElement of likesButtonsElements) {
-    likesButtonsElement.addEventListener('click', (event) => {
-      event.stopPropagation();
-      const index = likesButtonsElement.dataset.index;
-      let counter = comments[index]['like'];
-      
-        if (!comments[index]['likes']){
-          counter +=1;
-        } else {
-          counter -=1;
-        }
-        comments[index]['likes'] = !comments[index]['likes'];
-        comments[index]['like'] = counter;
-        renderComments(); 
-      });
-    };
-  }
-
-  likesElements();
-
-  const answersComment = () => {
-      const answerElements = document.querySelectorAll('.comment');
-
-      for (const answerElement of answerElements) {
-        answerElement.addEventListener('click', () => {
-          const index = answerElement.dataset.index;
-
-          commentElement.value = `>${comments[index]['comment']}\n${comments[index]['name']},`;
-
+        renderComments();
         });
-      }
-      
-    }
-
-    answersComment()
-
-    const replaceValue = (value) => {
-      return value
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;");
-    }
+      });
 
 
-  const renderComments = () => {
+  // РЕНДЕР
+function renderComments() {
     const commentsHtml = comments.map((comment, index) => {
       return `<li class="comment" data-index='${index}'>
         <div class="comment-header">
-          <div>${comment.name}</div>
+          <div>${comment.author.name}</div>
           <div>${comment.date}</div>
         </div>
         <div class="comment-body">
           <div class="comment-text">
-            ${comment.comment}
+            ${comment.text}
           </div>
           </div>
         </div>
         <div class="comment-footer">
           <div class="likes">
-            <span class="likes-counter">${comment.like}</span>
-            <button data-index='${index}' class="like-button ${comment.likes ? '-active-like' : ''}"></button>
+            <span class="likes-counter">${comment.likes}</span>
+            <button data-index='${index}' class="like-button ${comment.isLiked ? '-active-like' : ''}"></button>
           </div>
         </div>
       </li>`;
@@ -133,9 +97,28 @@
     answersComment()
   };
 
-renderComments();
+  renderComments();
 
+  // fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+  //         method: "POST",
+  //         body: JSON.stringify({
+  //           name: replaceValue(nameElement.value),
+  //           comment: replaceValue(commentElement.value),
+  //         })
+  //       }).then((response) => {
+  //         response.json().then(() => {
+  //           fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+  //             method: "GET"
+  //           }).then((responseAdd) => {
+  //             responseAdd.json().then((addJson) => {
+  //               comments = addJson.comments;
+  //               isWaiting = false;
 
+  //               renderComments();
+  //             });
+  //           });
+  //         });
+  //       });
 
   buttonElement.addEventListener('click', () => {
     nameElement.classList.remove('error');
@@ -149,20 +132,145 @@ renderComments();
       return;
     };
 
-    comments.push({
-      name: replaceValue(nameElement.value),
-      date: getTime(),
-      comment: replaceValue(commentElement.value),
-      like: 0,
-      likes: false,
-      edit: 'Редактировать',
-    })
+    // comments.push({
+    //   author: {name: replaceValue(nameElement.value)},
+    //   date: getTime(),
+    //   text: replaceValue(commentElement.value),
+    //   likes: 0,
+    //   isLiked: false,
+    // })
 
-    renderComments()
-    nameElement.value = ''; 
+
+    fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+        method: "POST",
+        body: JSON.stringify({
+          name: replaceValue(nameElement.value),
+          text: replaceValue(commentElement.value),
+        })
+      }).then((response) => {
+      const jsonPromise = response.json();
+      jsonPromise.then((responseData) => {
+        comments = responseData.comments;
+        renderComments();
+      });
+    });
+    
+    // fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+    //       method: "POST",
+    //       body: JSON.stringify({
+    //         name: replaceValue(nameElement.value),
+    //         text: replaceValue(commentElement.value),
+    //       })
+    //     }).then((response) => {
+    //       response.json().then(() => {
+    //         fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+    //           method: "GET"
+    //         }).then((responseData) => {
+    //           responseData.json().then((addJson) => {
+    //             comments = addJson.comments;
+    //             renderComments();
+    //           });
+    //         });
+    //       });
+    //     });
+
+    renderComments();
+    nameElement.value = '';
     commentElement.value = '';
-  
+
   });
+
+
+
+// СТАВИМ ЛАЙКИ
+function likesElements () {
+    const likesButtonsElements = document.querySelectorAll('.like-button');
+
+    for (const likesButtonsElement of likesButtonsElements) {
+      likesButtonsElement.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const index = likesButtonsElement.dataset.index;
+        let counter = comments[index]['likes'];
+
+        if (!comments[index]['isLiked']) {
+          counter += 1;
+        } else {
+          counter -= 1;
+        }
+        comments[index]['isLiked'] = !comments[index]['isLiked'];
+        comments[index]['likes'] = counter;
+        renderComments();
+      });
+    };
+  }
+  likesElements();
+
+
+// КОМЕНТИРУЕМ ОТЗЫВЫ
+function answersComment (){
+    const answerElements = document.querySelectorAll('.comment');
+
+    for (const answerElement of answerElements) {
+      answerElement.addEventListener('click', () => {
+        const index = answerElement.dataset.index;
+
+        commentElement.value = `>${comments[index]['text']}\n${comments[index]['author']['name']},`;
+      });
+    }
+  }
+  answersComment()
+
+
+  const replaceValue = (value) => {
+    return value
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+  // buttonElement.addEventListener('click', () => {
+  //   nameElement.classList.remove('error');
+  //   commentElement.classList.remove('error');
+  //   if (nameElement.value === '') {
+  //     nameElement.classList.add('error');
+  //     return;
+  //   };
+  //   if (commentElement.value === '') {
+  //     commentElement.classList.add('error');
+  //     return;
+  //   };
+
+  //   // comments.push({
+  //   //   author: {name: replaceValue(nameElement.value)},
+  //   //   date: getTime(),
+  //   //   text: replaceValue(commentElement.value),
+  //   //   likes: 0,
+  //   //   isLiked: false,
+  //   // })
+
+
+  //   fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+  //       method: "POST",
+  //       body: JSON.stringify({
+  //         author: {name: replaceValue(nameElement.value)},
+  //         text: replaceValue(commentElement.value),
+  //       })
+  //     }).then((response) => {
+  //     const jsonPromise = response.json();
+  //     jsonPromise.then((responseData) => {
+  //       comments = responseData.comments;
+  //       renderComments();
+  //     });
+  //   });
+    
+  //   renderComments()
+  //   nameElement.value = '';
+  //   commentElement.value = '';
+
+  // });
+
+
 
 
 </script>
