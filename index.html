@@ -97,7 +97,7 @@ function renderComments() {
     answersComment()
   };
 
-  renderComments();
+  // renderComments();
 
 
   buttonElement.addEventListener('click', () => {
@@ -112,14 +112,6 @@ function renderComments() {
       return;
     };
 
-    comments.push({
-      author: {name: replaceValue(nameElement.value)},
-      date: getTime(),
-      text: replaceValue(commentElement.value),
-      likes: 0,
-      isLiked: false,
-    })
-
 
     fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
         method: "POST",
@@ -130,8 +122,7 @@ function renderComments() {
       }).then((response) => {
       const jsonPromise = response.json();
       jsonPromise.then((responseData) => {
-        comments = responseData.comments;
-        renderComments();
+        fetchComments()
       });
     });
     
@@ -140,6 +131,20 @@ function renderComments() {
     commentElement.value = '';
 
   });
+
+
+
+
+  function fetchComments(){
+    fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments") 
+    .then((response) => response.json())
+    .then((responseData) => {
+        comments = responseData.comments;
+
+        renderComments();
+        });
+  };
+
 
 
 
