@@ -57,20 +57,23 @@
   //   }
   // ];
 
-
-  fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
-      method: "GET"
-    }).then((responseStart) => {
-      responseStart.json().then((startJson) => {
-        comments = startJson.comments;
-
+  function fetchComments() {
+    return fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+          method: "GET"
+        })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
+        comments = responseData.comments;
         renderComments();
-        });
-      });
+      })
+  };
 
+  fetchComments()
 
   // РЕНДЕР
-function renderComments() {
+  function renderComments() {
     const commentsHtml = comments.map((comment, index) => {
       return `<li class="comment" data-index='${index}'>
         <div class="comment-header">
@@ -112,20 +115,27 @@ function renderComments() {
       return;
     };
 
+    buttonElement.disabled = true;
+    buttonElement.textContent = 'Комментарий добавляется';
 
     fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
-        method: "POST",
-        body: JSON.stringify({
-          name: replaceValue(nameElement.value),
-          text: replaceValue(commentElement.value),
-        })
-      }).then((response) => {
-      const jsonPromise = response.json();
-      jsonPromise.then((responseData) => {
-        fetchComments()
-      });
-    });
-    
+      method: "POST",
+      body: JSON.stringify({
+        name: replaceValue(nameElement.value),
+        text: replaceValue(commentElement.value),
+      })
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((responseData) => {
+      return fetchComments()
+      })
+      .then((data) => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = 'Написать';
+      })
+
     renderComments();
     nameElement.value = '';
     commentElement.value = '';
@@ -135,21 +145,8 @@ function renderComments() {
 
 
 
-  function fetchComments(){
-    fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments") 
-    .then((response) => response.json())
-    .then((responseData) => {
-        comments = responseData.comments;
-
-        renderComments();
-        });
-  };
-
-
-
-
-// СТАВИМ ЛАЙКИ
-function likesElements () {
+  // СТАВИМ ЛАЙКИ
+  function likesElements() {
     const likesButtonsElements = document.querySelectorAll('.like-button');
 
     for (const likesButtonsElement of likesButtonsElements) {
@@ -172,8 +169,8 @@ function likesElements () {
   likesElements();
 
 
-// КОМЕНТИРУЕМ ОТЗЫВЫ
-function answersComment (){
+  // КОМЕНТИРУЕМ ОТЗЫВЫ
+  function answersComment() {
     const answerElements = document.querySelectorAll('.comment');
 
     for (const answerElement of answerElements) {
