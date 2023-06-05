@@ -58,7 +58,7 @@
   // ];
 
   function fetchComments() {
-    return fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+    return fetch("https://wedev-api.sky.pro/api/v1/vlada-krasnova/comments", {
           method: "GET"
         })
       .then((response) => {
@@ -67,6 +67,12 @@
       .then((responseData) => {
         comments = responseData.comments;
         renderComments();
+      })
+      .catch((error) => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = 'Написать';
+        alert ('Кажется что-то пошло не так. Попробуйте позже.');
+        console.warn(error);
       })
   };
 
@@ -118,15 +124,19 @@
     buttonElement.disabled = true;
     buttonElement.textContent = 'Комментарий добавляется';
 
-    fetch("https://webdev-hw-api.vercel.app/api/v1/vlada-krasnova/comments", {
+    fetch("https://wedev-api.sky.pro/api/v1/vlada-krasnova/comments", {
       method: "POST",
       body: JSON.stringify({
         name: replaceValue(nameElement.value),
         text: replaceValue(commentElement.value),
+        forceError: true,
       })
     })
-      .then((response) => {
-        return response.json();
+    .then(response => {
+        if (response.status === 400) throw new Error('Ошибка 400');
+        if (response.status === 500) throw new Error('Ошибка 500');
+
+        response.json();
       })
       .then((responseData) => {
       return fetchComments()
@@ -134,11 +144,25 @@
       .then((data) => {
         buttonElement.disabled = false;
         buttonElement.textContent = 'Написать';
+        nameElement.value = '';
+        commentElement.value = '';
+      })
+      .catch((error) => {
+        buttonElement.disabled = false;
+        buttonElement.textContent = 'Написать';
+
+        if (error.message === 'Ошибка 400') {
+          alert('Имя и комментарий должны быть не короче 3 символов');
+        } else if (error.message === 'Ошибка 500') {
+          alert('Сервер сломался, попробуй позже');
+        } else {
+          alert('Кажется, у вас сломался интернет, попробуйте позже');
+        }
+
+        console.warn(error);
       })
 
     renderComments();
-    nameElement.value = '';
-    commentElement.value = '';
 
   });
 
