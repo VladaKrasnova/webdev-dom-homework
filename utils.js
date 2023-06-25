@@ -8,12 +8,15 @@ export const replaceValue = (value) => {
         .replaceAll('QUOTE_END', '</div>');
 };
 
-export function correctDate({ date }) {
-    let year = editYear((new Date(date)).getFullYear());
-    let month = addZeroBefore((new Date(date)).getMonth() + 1);
-    let day = addZeroBefore((new Date(date)).getDate());
-    let hours = addZeroBefore((new Date(date)).getHours());
-    let minutes = addZeroBefore((new Date(date)).getMinutes());
-
-    return `${day}.${month}.${year} ${hours}:${minutes}`;
-}
+export const correctDate = (commentData) => {
+    let date = new Date(commentData);
+    let time = date.toTimeString().slice(0, 5);
+    let day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+    let month =
+      date.getMonth() + 1 < 10
+        ? '0' + (date.getMonth() + 1)
+        : date.getMonth() + 1;
+    let year = Number(String(date.getFullYear()).substring(2));
+    return day + '.' + month + '.' + year + ' ' + time;
+  };
+  
