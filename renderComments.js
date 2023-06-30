@@ -1,6 +1,6 @@
 import { renderLogin } from "./renderLogin.js";
 import { correctDate } from "./utils.js";
-import { postFetch } from "./api.js";
+
 
 export const renderComments = (app, isInitialLoading, comments, callback, user) => {
 

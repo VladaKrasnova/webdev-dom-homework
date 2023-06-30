@@ -39,9 +39,9 @@ export function postFetch(textInput, token) {
         if (response.status === 201) {
           response.json();
         } else if (response.status === 500) {
-          throw new Error('error500');
+          alert('Сервер сломался, попробуйте позже');
         } else if (response.status === 400) {
-          throw new Error('error400');
+          alert('Неверный логин или пароль');
         }
     })
 }
