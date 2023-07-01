@@ -2,7 +2,7 @@ import { fetchLogin } from "./api.js";
 import { renderComments } from "./renderComments.js";
 
 export const renderLogin = (app, isInitialLoading, comments, callback) => {
-    app.innerHTML = `
+  app.innerHTML = `
     <div class="container">
     <div class="add-form">
       <h3 class="title">Форма входа</h3>
@@ -34,9 +34,13 @@ export const renderLogin = (app, isInitialLoading, comments, callback) => {
   authButton.addEventListener('click', () => {
     const login = document.getElementById('login').value;
     const password = document.getElementById('password').value;
-    fetchLogin(login, password).then((response) => {
-        console.log(response);
-        renderComments(app, isInitialLoading, comments, callback, response.user);
-    });
-  });
-};
+    fetchLogin(login, password)
+    .catch(error => {
+        alert(error.message);
+    })
+    .then((response) => {
+      console.log(response);
+      renderComments(app, isInitialLoading, comments, callback, response.user);
+    })
+});
+}
