@@ -8,8 +8,8 @@ let comments = [];
 let isInitialLoading = true;
 
 export function handlePostClick(user) {
-    
-    const addButton = document.getElementById('add-form-button'); 
+
+    const addButton = document.getElementById('add-form-button');
     const nameInput = document.querySelector('.add-form-name');
     const textInput = document.querySelector('.add-form-text');
 
@@ -54,8 +54,8 @@ export function handlePostClick(user) {
 }
 
 function initAddButton(user) {
-    let addButton = document.getElementById('add-form-button'); 
-    addButton.addEventListener('click', function() {
+    let addButton = document.getElementById('add-form-button');
+    addButton.addEventListener('click', function () {
         handlePostClick(user)
     });
 }
